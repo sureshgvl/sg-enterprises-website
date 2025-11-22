@@ -1,0 +1,13 @@
+{
+  "name": "janmat-website",
+  "version": "1.0.0",
+  "description": "Static website for Janmat app to meet Razorpay approval requirements",
+  "main": "index.js",
+  "scripts": {
+    "serve": "firebase serve",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "keywords": ["janmat", "website"],
+  "author": "SG Enterprises",
+  "license": "ISC"
+}

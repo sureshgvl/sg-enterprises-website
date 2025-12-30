@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<!-- 
+  ============================================
+  WHATSAPP PRESENTATION - SEPARATE PAGES
+  ============================================
+  
+  Each section is a separate page with vertical scroll
+  Sequence: Title → Info → Clear Image
+  Navigation between pages
+  
+  ============================================
+-->
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Janmat – जनतेचा आवाज</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #212121;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Page container - each page is separate */
+    .page {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: rgba(255, 255, 255, 0.98);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .page.active {
+      display: block;
+      z-index: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Page content - vertical scroll container */
+    .page-content {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      padding-bottom: 120px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Title - Top of page */
+    .page-title {
+      font-size: 42px;
+      color: #667eea;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 40px;
+      margin-top: 20px;
+      word-wrap: break-word;
+    }
+
+    /* Info/Content - Middle section */
+    .page-info {
+      width: 100%;
+      margin-bottom: 40px;
+    }
+
+    .page-info p {
+      font-size: 22px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 24px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    .page-info ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .page-info ul li {
+      font-size: 22px;
+      line-height: 2.2;
+      color: #555;
+      margin-bottom: 20px;
+      padding-left: 36px;
+      position: relative;
+      font-weight: 500;
+      word-wrap: break-word;
+    }
+
+    .page-info ul li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: 700;
+      font-size: 32px;
+    }
+
+    /* Image - Bottom section, clear and high quality */
+    .page-image {
+      width: 100%;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .page-image img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      object-fit: contain;
+      background: #fff;
+      display: block;
+      /* High quality image rendering */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      image-rendering: high-quality;
+      image-rendering: auto;
+      /* Prevent blur */
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      /* Full quality - smooth rendering */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Logo specific styling - 128x128 */
+    #logo-img,
+    #app-logo-img {
+      width: 128px !important;
+      height: 128px !important;
+      max-width: 128px !important;
+      max-height: 128px !important;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    .page-image .placeholder {
+      width: 100%;
+      min-height: 500px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      border: 3px dashed rgba(255, 255, 255, 0.5);
+      text-align: center;
+      padding: 40px;
+      font-weight: 600;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 18px;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
+    /* Floating Navigation Buttons */
+    .floating-nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 16px 32px;
+      border-radius: 60px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-button {
+      padding: 14px 32px;
+      font-size: 17px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .nav-button:active {
+      transform: translateY(-1px);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Page indicator */
+    .page-indicator {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      font-size: 16px;
+      color: #666;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    /* Desktop styles */
+    @media (min-width: 768px) {
+      .page-content {
+        padding: 60px 40px;
+        padding-bottom: 140px;
+      }
+
+      .page-title {
+        font-size: 56px;
+        margin-bottom: 50px;
+      }
+
+      .page-info p,
+      .page-info ul li {
+        font-size: 24px;
+      }
+
+      .page-image img {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-title {
+        font-size: 64px;
+      }
+
+      .page-info p,
+      .page-info ul li {
+        font-size: 26px;
+      }
+
+      .page-image img {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 480px) {
+      .page-content {
+        padding: 30px 15px;
+        padding-bottom: 100px;
+      }
+
+      .page-title {
+        font-size: 32px;
+        margin-bottom: 30px;
+        margin-top: 10px;
+      }
+
+      .page-info p,
+      .page-info ul li {
+        font-size: 20px;
+      }
+
+      .page-info ul li {
+        padding-left: 28px;
+      }
+
+      .page-info ul li::before {
+        font-size: 28px;
+      }
+
+      .floating-nav {
+        bottom: 20px;
+        padding: 12px 24px;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .nav-button {
+        padding: 12px 24px;
+        font-size: 15px;
+        flex: 1;
+      }
+
+      .page-indicator {
+        top: 15px;
+        right: 15px;
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Page 1: Logo & Title -->
+<div class="page active" id="page-1">
+  <div class="page-content">
+    <div class="page-image">
+      <img id="logo-img" src="" alt="Janmat Logo" style="display:none;">
+      <div class="placeholder" id="logo-placeholder">
+        Logo Image<br/>(screens/logo.png)
+      </div>
+    </div>
+    <h1 class="page-title">Janmat</h1>
+    <div class="page-info">
+      <p style="font-size: 18px; color: #666; margin-bottom: 20px; font-weight: 500; font-style: italic; text-align: center;">
+        (निवडणूक आयोगाच्या आचारसंहितेनुसार Civic Platform)
+      </p>
+      <h2 style="font-size: 36px; color: #667eea; margin-bottom: 30px; font-weight: 700; text-align: center;">जनतेचा आवाज</h2>
+      <p style="font-size: 24px; font-weight: 600; color: #333;">
+        उमेदवारांसाठी एक नवीन मार्ग<br/>
+        <span style="color: #667eea;">प्रश्नांच्या आधारे संवाद</span> - नावाच्या नाही
+      </p>
+      <p style="margin-top: 30px; font-size: 20px; color: #555;">
+        आपल्या वॉर्डमधील नागरिकांच्या खऱ्या समस्या समजून घ्या<br/>
+        आणि त्यांच्याशी थेट संवाद साधा
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Page 2: Home Screen -->
+<div class="page" id="page-2">
+  <div class="page-content">
+    <h1 class="page-title">आपल्या वॉर्डची खरी स्थिती समजा</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        वॉर्ड निवडा आणि त्या वॉर्डमधील सर्व समस्या एकाच ठिकाणी पहा
+      </p>
+      <ul>
+        <li><strong>प्रत्येक वॉर्डसाठी समस्या:</strong> रस्ते, पाणी, कचरा, वीज, साफसफाई</li>
+        <li><strong>फोटोसह माहिती:</strong> प्रत्येक समस्या फोटोसह - खरी स्थिती दिसते</li>
+        <li><strong>वॉर्डनुसार संवाद:</strong> प्रत्येक वॉर्डसाठी स्वतंत्र पृष्ठ</li>
+        <li><strong>Support Count:</strong> किती लोकांना ही समस्या महत्त्वाची आहे ते दिसते</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ आपल्या वॉर्डमधील सर्व मुद्दे एका नजरेस पहा
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="home-img" src="" alt="Home Screen - Ward Selection" style="display:none;">
+      <div class="placeholder" id="home-placeholder">
+        Home Screen - Ward Selection<br/>(screens/home.png)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 3: Feed Screen -->
+<div class="page" id="page-3">
+  <div class="page-content">
+    <h1 class="page-title">नागरिक काय म्हणतात ते पहा</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        वॉर्डमधील सर्व पोस्ट्स एका ठिकाणी - सर्वात जास्त Support असलेले वर
+      </p>
+      <ul>
+        <li><strong>Trending Issues:</strong> सर्वात जास्त लोकांना महत्त्वाच्या समस्या वर दिसतात</li>
+        <li><strong>Real-time Updates:</strong> नवीन पोस्ट्स त्वरित दिसतात</li>
+        <li><strong>Support Count:</strong> किती लोकांना ही समस्या महत्त्वाची आहे</li>
+        <li><strong>Location Info:</strong> प्रत्येक समस्या कोठे आहे ते स्पष्ट</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ लोकांना खरोखर काय हवे आहे ते समजा
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="feed-img" src="" alt="Feed Screen - All Posts" style="display:none;">
+      <div class="placeholder" id="feed-placeholder">
+        Feed Screen - Posts List<br/>(screens/feed.png)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 4: Post Detail -->
+<div class="page" id="page-4">
+  <div class="page-content">
+    <h1 class="page-title">प्रत्येक समस्येची पूर्ण माहिती</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        समस्येची सर्व माहिती एकाच ठिकाणी - फोटो, स्थान, Support, Comments
+      </p>
+      <ul>
+        <li><strong>Clear Photos:</strong> समस्येची खरी स्थिती फोटोमध्ये दिसते</li>
+        <li><strong>Exact Location:</strong> कोठे समस्या आहे ते स्पष्ट - वॉर्ड, पत्ता</li>
+        <li><strong>Support Count:</strong> किती लोकांना ही समस्या महत्त्वाची आहे</li>
+        <li><strong>Comments:</strong> नागरिक काय म्हणतात ते पहा</li>
+        <li><strong>Transparent:</strong> सर्व काही सार्वजनिक - कोणीही पाहू शकतो</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ समस्येची पूर्ण माहिती मिळवा - निर्णय घेणे सोपे होते
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="post-img" src="" alt="Post Detail - Full Information" style="display:none;">
+      <div class="placeholder" id="post-placeholder">
+        Post Detail Screen<br/>(screens/post-detail.png)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 5: Comments -->
+<div class="page" id="page-5">
+  <div class="page-content">
+    <h1 class="page-title">सार्वजनिक Comments मध्ये उत्तरे द्या</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        Comments मध्ये नागरिकांच्या प्रश्नांची उत्तरे द्या - सर्वांना दिसेल
+      </p>
+      <ul>
+        <li><strong>Direct Communication:</strong> नागरिक थेट comment करतात - आपण उत्तर द्या</li>
+        <li><strong>Public & Transparent:</strong> सर्व comments सार्वजनिक - कोणीही पाहू शकतो</li>
+        <li><strong>EC-Safe:</strong> Election Commission guidelines पाळत संवाद</li>
+        <li><strong>Build Trust:</strong> पारदर्शक संवादामुळे विश्वास निर्माण होतो</li>
+        <li><strong>Quick Response:</strong> नागरिकांना त्वरित उत्तर मिळते</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ सार्वजनिक Comments मध्ये उत्तरे - सर्वांना दिसेल, विश्वास निर्माण होतो
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="comments-img" src="" alt="Comments - Direct Communication" style="display:none;">
+      <div class="placeholder" id="comments-placeholder">
+        Comments Section<br/>(screens/comments.png)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 6: Chat Screen -->
+<div class="page" id="page-6">
+  <div class="page-content">
+    <h1 class="page-title">Personal Chat मध्ये संवाद साधा</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        Chat मध्ये नागरिकांशी थेट संवाद - Personal आणि Private
+      </p>
+      <ul>
+        <li><strong>Direct Messages:</strong> नागरिक थेट message पाठवू शकतात</li>
+        <li><strong>Quick Response:</strong> त्वरित उत्तर द्या - Real-time chat</li>
+        <li><strong>Private & Secure:</strong> Personal conversations - सुरक्षित</li>
+        <li><strong>Easy to Use:</strong> WhatsApp सारखे सोपे interface</li>
+        <li><strong>Multiple Chats:</strong> एकाच वेळी अनेक नागरिकांशी chat करा</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ नागरिकांशी Personal संवाद - विश्वास आणि जवळीक निर्माण करा
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="chat-img" src="" alt="Chat - Direct Messages" style="display:none;">
+      <div class="placeholder" id="chat-placeholder">
+        Chat Screen<br/>(screens/chat.jpeg)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 7: Candidate Profile -->
+<div class="page" id="page-7">
+  <div class="page-content">
+    <h1 class="page-title">आपली Profile Manage करा</h1>
+    <div class="page-info">
+      <p style="font-size: 22px; margin-bottom: 30px; color: #333; font-weight: 600;">
+        आपली सर्व माहिती एकाच ठिकाणी - Profile, Achievements, Manifesto, Contact
+      </p>
+      <ul>
+        <li><strong>Profile:</strong> Photo upload करा, Bio लिहा - नागरिकांना आपली ओळख करून द्या</li>
+        <li><strong>Achievements:</strong> आपले काम, पुरस्कार, यश add करा</li>
+        <li><strong>Manifesto:</strong> आपले वचन, योजना लिहा - PDF upload करा</li>
+        <li><strong>Contact:</strong> Phone, Email, Social Media links add करा</li>
+        <li><strong>Media:</strong> Photos आणि Videos add करा - आपले काम दाखवा</li>
+        <li><strong>Events:</strong> सभा, कार्यक्रम add करा - नागरिकांना कळवा</li>
+        <li><strong>Highlight:</strong> Premium feature - आपली profile highlight करा</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 20px; color: #667eea; font-weight: 600;">
+        ✅ आपली संपूर्ण माहिती manage करा - नागरिकांना आपल्याबद्दल सर्व काही कळेल
+      </p>
+    </div>
+    <div class="page-image">
+      <img id="candidate-img" src="" alt="Candidate Profile Screen" style="display:none;">
+      <div class="placeholder" id="candidate-placeholder">
+        Candidate Profile Screen<br/>(screens/candidate.png)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 8: App Download -->
+<div class="page" id="page-8">
+  <div class="page-content">
+    <div class="page-image">
+      <img id="app-logo-img" src="" alt="Janmat Logo" style="display:none;">
+      <div class="placeholder" id="app-logo-placeholder">
+        Logo Image<br/>(screens/logo.png)
+      </div>
+    </div>
+    <h1 class="page-title">🗳️ जनमत – जनतेचा आवाज</h1>
+    <div class="page-info">
+      <p style="font-size: 24px; margin: 30px 0; line-height: 1.8; color: #333; font-weight: 600; text-align: center;">
+        तुमच्या वॉर्डमधील समस्या मांडण्यासाठी,<br/>
+        मत मांडण्यासाठी आणि उमेदवारांशी थेट संवादासाठी<br/>
+        <span style="color: #667eea; font-weight: 700;">आजच Janmat App डाउनलोड करा.</span>
+      </p>
+      
+      <div style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%); padding: 40px; border-radius: 20px; margin: 40px 0; text-align: center;">
+        <p style="font-size: 22px; color: #667eea; font-weight: 700; margin-bottom: 20px;">
+          📱 Download Now:
+        </p>
+        <a href="https://play.google.com/store/apps/details?id=com.sg.janmat" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="display: inline-block; padding: 18px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; text-decoration: none; border-radius: 12px; font-size: 20px; font-weight: 700; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); transition: all 0.3s ease; margin-top: 10px;">
+          Google Play Store
+        </a>
+        <p style="font-size: 18px; color: #666; margin-top: 20px;">
+          <a href="https://play.google.com/store/apps/details?id=com.sg.janmat" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             style="color: #667eea; text-decoration: none; word-break: break-all;">
+            https://play.google.com/store/apps/details?id=com.sg.janmat
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 9: Call to Action -->
+<div class="page" id="page-9">
+  <div class="page-content">
+    <h1 class="page-title">आजच सुरुवात करा</h1>
+    <div class="page-info">
+      <p style="font-size: 26px; margin: 40px 0; line-height: 1.8; color: #333; font-weight: 600;">
+        Janmat वापरून आपल्या वॉर्डमधील नागरिकांशी थेट संवाद साधा
+      </p>
+      
+      <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 30px; border-radius: 20px; margin: 30px 0;">
+        <h3 style="font-size: 24px; color: #667eea; margin-bottom: 20px; font-weight: 700;">काय मिळेल?</h3>
+        <ul style="text-align: left; max-width: 700px; margin: 0 auto;">
+          <li>✅ नागरिकांच्या खऱ्या समस्या समजून घ्या</li>
+          <li>✅ Data-driven decisions घ्या</li>
+          <li>✅ पारदर्शक संवाद - विश्वास निर्माण करा</li>
+          <li>✅ EC guidelines पाळत - सुरक्षित</li>
+          <li>✅ प्रत्येक वॉर्डचे मुद्दे स्पष्ट</li>
+        </ul>
+      </div>
+
+      <p style="font-size: 28px; margin: 40px 0; line-height: 1.6; color: #667eea; font-weight: 700;">
+        आपल्या वॉर्डचा आवाज बना<br/>
+        लोकशाही बळकट करा
+      </p>
+      
+      <h2 style="font-size: 42px; margin-top: 40px; color: #667eea; font-weight: 800; text-align: center;">
+        Janmat – जनतेचा आवाज
+      </h2>
+      
+      <div style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%); padding: 30px; border-radius: 20px; margin: 40px 0;">
+        <h3 style="font-size: 24px; color: #667eea; margin-bottom: 20px; font-weight: 700;">पुढचा step काय?</h3>
+        <ul style="text-align: left; max-width: 700px; margin: 0 auto; font-size: 20px;">
+          <li>• 2 मिनिटांचा live demo</li>
+          <li>• Profile activate करून पहा</li>
+          <li>• Free reply देऊन response पाहा</li>
+        </ul>
+      </div>
+      
+      <p style="font-size: 20px; margin-top: 30px; color: #666;">
+        Questions? 
+        <a href="https://wa.me/919049606115" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="color: #25D366; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
+          📱 Contact us on WhatsApp
+        </a>
+        <br/>
+        <a href="https://wa.me/919049606115" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="color: #25D366; text-decoration: none; font-weight: 600; margin-top: 10px; display: inline-block;">
+          +91 90496 06115
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Navigation Buttons -->
+<div class="floating-nav">
+  <button class="nav-button" id="prev-btn" onclick="goToPreviousPage()">⬅ मागे</button>
+  <button class="nav-button" id="next-btn" onclick="goToNextPage()">Demo पुढे ➡</button>
+</div>
+
+<!-- Page Indicator -->
+<div class="page-indicator" id="page-indicator">1 / 9</div>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const totalPages = pages.length;
+  let currentPageIndex = 0;
+
+  // Image URLs configuration
+  // Google Drive: Share links - automatically converts to direct image URLs
+  const IMAGE_URLS = {
+    logo: 'https://drive.google.com/file/d/1jL8BtdhxwX845KlfiPWqZEk4STIYvGKZ/view?usp=sharing',
+    home: 'https://drive.google.com/file/d/1D326iUnSfFja1q65qh2qcSLO8NhhyzZo/view?usp=sharing',
+    feed: 'https://drive.google.com/file/d/10OF3427exkqP2mBNLrzCjP-ntvifHram/view?usp=sharing',
+    'post-detail': 'https://drive.google.com/file/d/1lUu38mT8dhpPAyXP5FiNYWxjk6-rndWO/view?usp=sharing',
+    comments: 'https://drive.google.com/file/d/1GE7tC95X8D3n9kT-xJiGvxQ0qn9Ag6fC/view?usp=sharing',
+    chat: 'https://drive.google.com/file/d/1OiJ_V3NBiteZUGvsnRlVWeKZeT1XfMp7/view?usp=sharing',
+    candidate: 'https://drive.google.com/file/d/1WEzs4iFD7QWPD6eA0vHt8lJQ_4z2Xxko/view?usp=sharing'
+  };
+
+  // Helper function to convert Google Drive share link to direct image URL
+  function convertGoogleDriveUrl(shareUrl) {
+    if (!shareUrl || shareUrl.trim() === '') return null;
+    
+    // If already a direct image URL, return as is
+    if (shareUrl.includes('uc?export=view') || shareUrl.match(/https?:\/\/.*\.(jpg|jpeg|png|gif|webp)/i)) {
+      return shareUrl;
+    }
+    
+    // Extract file ID from Google Drive share link
+    // Format: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+    const fileIdMatch = shareUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      const fileId = fileIdMatch[1];
+      // Return multiple format options for Google Drive
+      return {
+        format1: `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920-h1080`, // Thumbnail API - high quality
+        format2: `https://drive.google.com/thumbnail?id=${fileId}&sz=w2560-h1440`, // Higher quality
+        format3: `https://drive.google.com/uc?export=view&id=${fileId}`, // Standard format
+        format4: `https://drive.google.com/uc?export=download&id=${fileId}`, // Download format
+        format5: `https://lh3.googleusercontent.com/d/${fileId}`, // Alternative format
+        original: shareUrl
+      };
+    }
+    
+    // Try alternative format: https://drive.google.com/open?id=FILE_ID
+    const altMatch = shareUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (altMatch && altMatch[1]) {
+      const fileId = altMatch[1];
+      return {
+        format1: `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920-h1080`,
+        format2: `https://drive.google.com/uc?export=view&id=${fileId}`,
+        format3: `https://drive.google.com/uc?export=download&id=${fileId}`,
+        original: shareUrl
+      };
+    }
+    
+    return shareUrl;
+  }
+
+  // Helper function to convert ImgBB page URL to direct image URL
+  function getDirectImageUrl(pageUrl) {
+    if (!pageUrl || pageUrl.trim() === '') return null;
+    
+    // Check if it's a Google Drive URL
+    if (pageUrl.includes('drive.google.com')) {
+      return convertGoogleDriveUrl(pageUrl);
+    }
+    
+    // If already a direct link, return as is
+    if (pageUrl.includes('i.ibb.co') || pageUrl.match(/https?:\/\/.*\.(jpg|jpeg|png|gif|webp)/i)) {
+      return pageUrl;
+    }
+    
+    // Try ImgBB conversion
+    const match = pageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+    if (match && match[1]) {
+      const hash = match[1];
+      return {
+        format1: `https://i.ibb.co/${hash}/image.jpg`,
+        format2: `https://i.ibb.co/${hash}/image.png`,
+        format3: `https://i.ibb.co/${hash.substring(0,2)}/${hash.substring(2)}/image.jpg`,
+        format4: `https://i.ibb.co/${hash.substring(0,2)}/${hash.substring(2)}/image.png`,
+        format5: `https://ibb.co/${hash}.jpg`,
+        format6: `https://ibb.co/${hash}.png`,
+        format7: `https://i.ibb.co/${hash}/${hash}.jpg`,
+        format8: `https://i.ibb.co/${hash}/${hash}.png`,
+        original: pageUrl
+      };
+    }
+    
+    return pageUrl;
+  }
+
+  // Image loading function with high quality settings
+  function loadImage(imgElement, placeholderElement, imageKey) {
+    // Show loading indicator
+    if (placeholderElement) {
+      placeholderElement.style.display = 'flex';
+      placeholderElement.innerHTML = '<div class="loading-spinner"></div><div class="loading-text">Loading image...</div>';
+    }
+    
+    if (IMAGE_URLS[imageKey] && IMAGE_URLS[imageKey].trim() !== '') {
+      const urlConfig = getDirectImageUrl(IMAGE_URLS[imageKey]);
+      
+      if (urlConfig && typeof urlConfig === 'object' && !urlConfig.includes) {
+        // Handle multiple format options (Google Drive or ImgBB)
+        const formats = [
+          urlConfig.format1, urlConfig.format2, urlConfig.format3, urlConfig.format4,
+          urlConfig.format5, urlConfig.format6, urlConfig.format7, urlConfig.format8,
+          urlConfig.original, IMAGE_URLS[imageKey]
+        ].filter(f => f);
+        
+        let formatIndex = 0;
+        
+        function tryFormat() {
+          if (formatIndex < formats.length) {
+            console.log(`Trying format ${formatIndex + 1} for ${imageKey}:`, formats[formatIndex]);
+            imgElement.src = formats[formatIndex];
+            formatIndex++;
+          } else {
+            console.error(`All formats failed for ${imageKey}`);
+            imgElement.style.display = 'none';
+            if (placeholderElement) {
+              placeholderElement.style.display = 'flex';
+              placeholderElement.innerHTML = `Image not loading<br/>Check Google Drive share settings<br/>(${imageKey})`;
+            }
+          }
+        }
+        
+        imgElement.onerror = function() {
+          console.error(`Failed to load image format ${formatIndex} for ${imageKey}`);
+          tryFormat();
+        };
+        
+        imgElement.onload = function() {
+          console.log(`Successfully loaded image for ${imageKey}`);
+          imgElement.style.display = 'block';
+          if (placeholderElement) placeholderElement.style.display = 'none';
+          // Ensure full quality image
+          imgElement.style.imageRendering = 'auto';
+          imgElement.style.imageRendering = '-webkit-optimize-contrast';
+          imgElement.style.imageRendering = 'high-quality';
+          // Logo specific size - 128x128
+          if (imageKey === 'logo') {
+            imgElement.style.width = '128px';
+            imgElement.style.height = '128px';
+            imgElement.style.maxWidth = '128px';
+            imgElement.style.maxHeight = '128px';
+          } else {
+            // Force full size for other images
+            imgElement.style.maxWidth = '100%';
+            imgElement.style.width = '100%';
+            imgElement.style.height = 'auto';
+          }
+        };
+        
+        tryFormat();
+      } else {
+        // Direct URL provided
+        console.log(`Loading direct URL for ${imageKey}:`, urlConfig || IMAGE_URLS[imageKey]);
+        imgElement.src = urlConfig || IMAGE_URLS[imageKey];
+        imgElement.onload = function() {
+          console.log(`Successfully loaded direct image for ${imageKey}`);
+          imgElement.style.display = 'block';
+          if (placeholderElement) placeholderElement.style.display = 'none';
+          // Ensure full quality image
+          imgElement.style.imageRendering = 'auto';
+          imgElement.style.imageRendering = '-webkit-optimize-contrast';
+          imgElement.style.imageRendering = 'high-quality';
+          // Logo specific size - 128x128
+          if (imageKey === 'logo') {
+            imgElement.style.width = '128px';
+            imgElement.style.height = '128px';
+            imgElement.style.maxWidth = '128px';
+            imgElement.style.maxHeight = '128px';
+          } else {
+            // Force full size for other images
+            imgElement.style.maxWidth = '100%';
+            imgElement.style.width = '100%';
+            imgElement.style.height = 'auto';
+          }
+        };
+        imgElement.onerror = function() {
+          console.error(`Failed to load direct image for ${imageKey}`);
+          imgElement.style.display = 'none';
+          if (placeholderElement) {
+            placeholderElement.style.display = 'flex';
+            placeholderElement.innerHTML = `Image not loading<br/>Check Google Drive share settings<br/>(${imageKey})`;
+          }
+        };
+      }
+    } else {
+      // No URL provided
+      if (placeholderElement) {
+        placeholderElement.style.display = 'flex';
+        placeholderElement.innerHTML = `No image URL<br/>(${imageKey})`;
+      }
+    }
+  }
+
+  // Load all images
+  window.addEventListener('DOMContentLoaded', function() {
+    loadImage(document.getElementById('logo-img'), document.getElementById('logo-placeholder'), 'logo');
+    loadImage(document.getElementById('app-logo-img'), document.getElementById('app-logo-placeholder'), 'logo');
+    loadImage(document.getElementById('home-img'), document.getElementById('home-placeholder'), 'home');
+    loadImage(document.getElementById('feed-img'), document.getElementById('feed-placeholder'), 'feed');
+    loadImage(document.getElementById('post-img'), document.getElementById('post-placeholder'), 'post-detail');
+    loadImage(document.getElementById('comments-img'), document.getElementById('comments-placeholder'), 'comments');
+    loadImage(document.getElementById('chat-img'), document.getElementById('chat-placeholder'), 'chat');
+    loadImage(document.getElementById('candidate-img'), document.getElementById('candidate-placeholder'), 'candidate');
+    
+    updatePageIndicator();
+    updateNavButtons();
+  });
+
+  // Show specific page
+  function showPage(index) {
+    if (index < 0 || index >= totalPages) return;
+    
+    pages.forEach(page => page.classList.remove('active'));
+    pages[index].classList.add('active');
+    currentPageIndex = index;
+    
+    // Scroll to top of page
+    pages[index].scrollTop = 0;
+    
+    updatePageIndicator();
+    updateNavButtons();
+  }
+
+  // Go to next page
+  function goToNextPage() {
+    if (currentPageIndex < totalPages - 1) {
+      showPage(currentPageIndex + 1);
+    }
+  }
+
+  // Go to previous page
+  function goToPreviousPage() {
+    if (currentPageIndex > 0) {
+      showPage(currentPageIndex - 1);
+    }
+  }
+
+  // Update page indicator
+  function updatePageIndicator() {
+    const indicator = document.getElementById('page-indicator');
+    if (indicator) {
+      indicator.textContent = `${currentPageIndex + 1} / ${totalPages}`;
+    }
+  }
+
+  // Update navigation buttons
+  function updateNavButtons() {
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    
+    if (prevBtn) {
+      prevBtn.disabled = currentPageIndex === 0;
+    }
+    if (nextBtn) {
+      nextBtn.disabled = currentPageIndex === totalPages - 1;
+    }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      goToNextPage();
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPreviousPage();
+    }
+    if (e.key === 'Home') {
+      e.preventDefault();
+      showPage(0);
+    }
+    if (e.key === 'End') {
+      e.preventDefault();
+      showPage(totalPages - 1);
+    }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    if (Math.abs(deltaX) > 100) {
+      if (deltaX < 0) {
+        goToNextPage();
+      } else {
+        goToPreviousPage();
+      }
+    }
+  }
+
+  // Initialize
+  showPage(0);
+</script>
+
+</body>
+</html>
+
